@@ -3,7 +3,7 @@
 
 > <h2>목차</h2>
 * 테스트 코드 작성 
-* JPA 
+* [JPA](/Astudy/JPA.md)
   * JPA란
   * Spring Data JPA 적용
   * 테스트코드 
