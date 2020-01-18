@@ -27,3 +27,61 @@ JPA는 인터페이스이다. 이를 구현하기 위해서는 구현체가 필�
 * 1:N 관계 표현 
 * 상태와 행위를 한 곳에서 관리
 
+> Spring Data JPA 테스트코드 작성 
+
+~~~
+package com.jsy.book.springboot.domain.posts;
+
+import javafx.geometry.Pos;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class PostsRepositoryTest {  // save, findall 기능
+
+    @Autowired
+    PostsRepository  postsRepository ;
+
+    @After
+    public void cleanup(){
+        postsRepository.deleteAll();
+    }
+    @Test
+    public void 게시글저장_불러오기(){
+        //given
+        String title = "테스트 게시글";
+        String content = "테스트 내용";
+
+        postsRepository.save(Posts.builder().title(title).content(content).author("jsy").build()); 
+
+        //when
+        List<Posts> postsList = postsRepository.findAll(); 
+
+        //then
+        Posts posts = postsList.get(0);
+        assertThat(posts.getTitle()).isEqualTo(title);
+        assertThat(posts.getContent()).isEqualTo(content);
+    }
+}
+
+~~~
+
+* @After : Junit 단위테스트 끝날 때마다 수행되는 메소드 지정. 주로 테스트간 데이터 침범 막기 위해 사용. 
+* postsRepository.save : id가 있으면 udpate, 없으면 insert쿼리가 실행된다. 
+* findAll : 테이블 posts에 있는 모든 데이터를 조회해오는 메소드 
+ 
+ 실행 후 쿼리 로그를 보기 위해선 application.properties 파일을 추가해줘야한다. 
+ ~~~
+spring.jpa.show_sql=true
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
+~~~
+ 아래 줄은 출력되는 쿼리를 MySQL 버전으로 변경하는 것  
