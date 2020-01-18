@@ -85,3 +85,41 @@ spring.jpa.show_sql=true
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
 ~~~
  아래 줄은 출력되는 쿼리를 MySQL 버전으로 변경하는 것  
+ 
+ 
+ > 등록/수정/조회 API 만들기 
+
+API를 만들기 위해 3개의 클래스가 필요하다. 
+* Request 데이터를 받을 Dto 
+* API 요청을 받을 Controller
+* 트랜잭션, 도메인 기능 간의 순서를 보장하는 Service 
+
+<b>
+
+***Web Layer***  
+* 컨트롤러(@Controller)와 JSP/Freemarker 등의 뷰 템플릿 영역. 
+* 필터, 인터셉터, 컨트롤러 어드바이스(@ControllerAdvice)등 외부 요청과 응답에 대한 전반적인 영역.
+
+***Service Layer*** 
+ * @Service에 사용되는 영역 
+ * 일반적으로 Controller와 Dao의 중간 영역에서 사용된다. 
+ * @Transaction이 사용되어야하는 영역이기도 하다. 
+
+***Repository Layer***
+* DataBase와 같이 데이터 저장소에 접근하는 영역
+* Dao 영역
+
+***Dtos***
+* 계층 간에 테이터 교환을 위한 객체
+* ex) 뷰 템플릿 엔진에 사용될 객체나 Repository Layer에서 결과로 넘겨준 객체 등
+
+***Domain Model***
+* 개발 대상을 모든 사람이 동일한 관점에서 이해할 수 있고 공유할 수 있도록 단순화 시킨 것. 
+* ex) 택시 앱 - 배차,승차,요금 등이 모두 도메인이 될 수 있다. 
+* @Entity 가 사용된 영역도 도메인 모델
+
+비즈니스 처리를 담당해야 할 곳은 domain 이다.
+
+기존엔 모든 로직이 서비스 클래스 내부에서 처리. 그러다보니 **서비스 계층이 무의미, 객체란 단순히 데이터 덩어리** 역할만 하게 되었다. 
+
+반면 도메인 모델에서 처리할 경우 서비스 메소드는 트랜잭션과 도메이 ㄴ간의 순서만 보장할 수 있다. 
